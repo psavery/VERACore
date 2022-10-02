@@ -37,13 +37,15 @@ def initialize(server, vera_out_file):
     state.selected_layer = 24
     state.selected_assembly = 36
     state.selected_time = 0
+    state.selected_time_ui = 0
     # FIXME ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    @state.change("selected_time")
-    def selected_time_changed(selected_time, **kwargs):
+    @state.change("selected_time_ui")
+    def selected_time_changed(selected_time_ui, **kwargs):
         # This needs to be done before any of the initialize() calls
-        selected_time = int(selected_time)
-        vera_out_file.active_state_index = selected_time
+        selected_time_ui = int(selected_time_ui)
+        vera_out_file.active_state_index = selected_time_ui
+        state.selected_time = selected_time_ui
 
     @state.change("selected_array")
     def selected_array_changed(selected_array, **kwargs):
@@ -245,25 +247,25 @@ def initialize(server, vera_out_file):
             with vuetify.VBtn(
                 icon=True,
                 small=True,
-                disabled=("selected_time == 0",),
-                click="selected_time--",
+                disabled=("selected_time_ui == 0",),
+                click="selected_time_ui--",
             ):
                 vuetify.VIcon("mdi-minus")
             html.Div(
-                "State {{ selected_time }}",
+                "State {{ selected_time_ui }}",
                 classes="text-center",
                 style="width: 100px;",
             )
             with vuetify.VBtn(
                 icon=True,
                 small=True,
-                disabled=(f"selected_time == {len(vera_out_file.states) - 1}",),
-                click="selected_time++",
+                disabled=(f"selected_time_ui == {len(vera_out_file.states) - 1}",),
+                click="selected_time_ui++",
             ):
                 vuetify.VIcon("mdi-plus")
             vuetify.VDivider(vertical=True, classes="mx-2")
             vuetify.VSlider(
-                v_model=("selected_time",),
+                v_model=("selected_time_ui",),
                 min=0,
                 max=len(vera_out_file.states) - 1,
                 dense=True,
